@@ -102,7 +102,7 @@ int main(int argc, int* argv[]) {
 	int n = 10000000;
 	int64_t prime = nthPrimeSieve(n);
 	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Prime number %d is: %d\n", n, prime);
+	printf("Prime #%d is: %d\n", n, prime);
 	printf("Time: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
 	return 0;
