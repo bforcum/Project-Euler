@@ -5,16 +5,7 @@
 #include <math.h>
 #include <time.h>
 
-bool isPrime(int64_t num, int primeCount, int64_t primes[]) {
-	bool isPrime = true;
-	for (int k = 0; k < primeCount && isPrime; k++) {
-		isPrime = 0 < num % primes[k];
-	}
-	return isPrime;
-}
-
-// Sieve of Eratosthenes
-void primeSieve(int64_t* buf, int64_t n) {
+void sieveOfEratosthenes(int64_t* buf, int64_t n) {
 	// Set an upper bound for the range of the nth prime
 	int64_t upperBound = (int64_t) (3 + (n - 1) * (log(n) + log(1 + log(n))));
 	// sqrt(upperBound) is the maximum factor that could prove numbers in range composite
@@ -33,14 +24,13 @@ void primeSieve(int64_t* buf, int64_t n) {
 		if (0 == isPrime[i]) {
 			continue;
 		}
-		// Starts at i*i because all factors less than that will already be accurate.
+		// Start at i*i because all lesser factors will already be marked.
 		for (int64_t j = i*i; j < upperBound; j += i * 2) {
 			isPrime[j] = (char) 0;
 		}
 	}
 	
 	// Scan for primes in isPrime
-	
 	buf[0] = 2;
 	for (int64_t i = 3, j = 1; i < upperBound && j < n; i+=2) {		
 		if (isPrime[i]) {
@@ -53,16 +43,23 @@ void primeSieve(int64_t* buf, int64_t n) {
 
 }
 
-// Get the nth prime from primeSieve()
+// Get the nth prime from a sieve algorithm
 int64_t nthPrimeSieve(int64_t n) {
 	int64_t* primes = malloc(sizeof(int64_t) * n);
-	primeSieve(primes, n);
+	sieveOfEratosthenes(primes, n);
 	int64_t prime = primes[n-1];
 	free(primes);
 	return prime;
 }
 
-int64_t nthPrimeBad(int n) {
+bool isPrime(int64_t num, int primeCount, int64_t primes[]) {
+	bool isPrime = true;
+	for (int k = 0; k < primeCount && isPrime; k++) {
+		isPrime = 0 < num % primes[k];
+	}
+	return isPrime;
+}
+int64_t worseNthPrime(int n) {
 	int64_t* primes = malloc(sizeof(int64_t) * n);
 	primes[0] = 2;
 	for (int i = 1; i < n; i++) {
@@ -81,7 +78,7 @@ int64_t nthPrimeBad(int n) {
 	free(primes);
 	return result;
 }
-int64_t nthPrime(int n) {
+int64_t badNthPrime(int n) {
 	int64_t* primes = malloc(sizeof(int64_t) * n);
 	primes[0] = 2;
 	int k = 1;
@@ -102,7 +99,7 @@ int64_t nthPrime(int n) {
 
 int main(int argc, int* argv[]) {
 	clock_t begin = clock();
-	int n = 1000000;
+	int n = 10000000;
 	int64_t prime = nthPrimeSieve(n);
 	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	printf("Prime number %d is: %d\n", n, prime);
