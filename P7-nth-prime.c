@@ -44,7 +44,7 @@ void sieveOfEratosthenes(int64_t* buf, int64_t n) {
 }
 
 // Get the nth prime from a sieve algorithm
-int64_t nthPrimeSieve(int64_t n) {
+int64_t nthPrime(int64_t n) {
 	int64_t* primes = malloc(sizeof(int64_t) * n);
 	sieveOfEratosthenes(primes, n);
 	int64_t prime = primes[n-1];
@@ -100,7 +100,7 @@ int64_t badNthPrime(int n) {
 int main(int argc, int* argv[]) {
 	clock_t begin = clock();
 	int n = 10000000;
-	int64_t prime = nthPrimeSieve(n);
+	int64_t prime = nthPrime(n);
 	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	printf("Prime #%d is: %d\n", n, prime);
 	printf("Time: %d sec %d ms\n", ms / 1000, ms % 1000);
