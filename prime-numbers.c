@@ -82,14 +82,14 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	for (int64_t x = 1, xUpper = (int64_t) sqrt(max / 4) + 1; x < xUpper; x++) {
 		int64_t xres = 4 * x * x;
 		int64_t yUpper = (int64_t) sqrt(max - xres) + 1;
-		for (int64_t y = 1; y < yUpper; y++) {
+		for (int64_t y = 1; y < yUpper; y+=2) {
 			
 			int64_t n = xres + (y * y);
 			int64_t r = n % 60;
 			// 1, 13, 17, 29, 37, 41, 49, or 53
 			// r == 1 || r == 13 || r == 37 || r == 49 ||  r == 17 || r == 29 || r == 41 || r == 53
 
-			if ((r == 1 || r == 13 || r == 37 || r == 49 ||  r == 17 || r == 29 || r == 41 || r == 53) && n <= max) {
+			if ((r == 1 || r == 13 || r == 37 || r == 49 ||  r == 17 || r == 29 || r == 41 || r == 53)) {
 				isPrime[n] = !isPrime[n];
 			}
 		}
@@ -99,12 +99,12 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	
 	// Condition 2
 	begin = clock();
-	for (int64_t x = 1, xUpper = (int64_t) sqrt(max / 3) + 1; x < xUpper; x++) {
+	for (int64_t x = 1, xUpper = (int64_t) sqrt(max / 3) + 1; x < xUpper; x+=2) {
 		int64_t xres = 3 * x * x;
 		int64_t yUpper = (int64_t) sqrt(max - xres) + 1;
-		for (int64_t y = 1; y < yUpper; y++) {
+		for (int64_t y = 2; y < yUpper; y+=2) {
 			int64_t n = xres + (y * y);
-			if (n % 12 == 7 && n % 60 <= 43 && n <= max) {
+			if (n % 12 == 7) {
 				isPrime[n] = !isPrime[n];
 			}
 		}
@@ -117,10 +117,10 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	for (int64_t x = 1; x * x < max; x++) {
 		int64_t xres = 3 * x * x;
 		// int64_t yUpper = (int64_t) sqrt(max) + 1;
-		for (int64_t y = 1; y < x; y++) {
+		for (int64_t y = !(x & 1); y < x; y += 2) {
 			int64_t n = xres - (y * y);
-			int r = n % 60;
-			if ((r == 11 || r == 23 || r == 47 || r == 59) && n <= max) {
+			int r = n % 12;
+			if ((r == 11) && n <= max) {
 				isPrime[n] = !isPrime[n];
 			}
 		}
@@ -200,7 +200,7 @@ int64_t primeSum(int64_t upperBound) {
 int main(int argc, int* argv[]) {
 	
 	clock_t begin = clock();
-	int index = 10000000;
+	int index = 50000000;
 	
 	int64_t prime = nthPrimeAtkin(index);
 	
