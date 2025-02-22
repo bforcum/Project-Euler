@@ -78,12 +78,12 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	}
 
 	clock_t begin = clock(); 
-	for (int64_t x = 1, xUpper = (int64_t) ceil(sqrt(max / 4)); x < xUpper; x++) {
+	// Condition 1
+	for (int64_t x = 1, xUpper = (int64_t) sqrt(max / 4) + 1; x < xUpper; x++) {
 		int64_t xres = 4 * x * x;
-		int64_t yUpper = (int64_t) ceil(sqrt(max - xres));
+		int64_t yUpper = (int64_t) sqrt(max - xres) + 1;
 		for (int64_t y = 1; y < yUpper; y++) {
 			
-			// Condition 1
 			int64_t n = xres + (y * y);
 			int64_t r = n % 60;
 			// 1, 13, 17, 29, 37, 41, 49, or 53
@@ -96,12 +96,13 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	}
 	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	
+	// Condition 2
 	begin = clock();
-	for (int64_t x = 1, xUpper = (int64_t) ceil(sqrt(max / 3)); x < xUpper; x++) {
+	for (int64_t x = 1, xUpper = (int64_t) sqrt(max / 3) + 1; x < xUpper; x++) {
 		int64_t xres = 3 * x * x;
-		int64_t yUpper = (int64_t) ceil(sqrt(max - xres));
+		int64_t yUpper = (int64_t) sqrt(max - xres) + 1;
 		for (int64_t y = 1; y < yUpper; y++) {
-			// Condition 2
 			int64_t n = xres + (y * y);
 			if (n % 12 == 7 && n % 60 <= 43 && n <= max) {
 				isPrime[n] = !isPrime[n];
@@ -110,12 +111,13 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	}
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	
+	// Condition 3
 	begin = clock();
 	for (int64_t x = 1; x * x < max; x++) {
 		int64_t xres = 3 * x * x;
-		int64_t yUpper = (int64_t) ceil(sqrt(max));
-		for (int64_t y = 1; y < yUpper && y < x; y++) {
-			// Condition 3
+		// int64_t yUpper = (int64_t) sqrt(max) + 1;
+		for (int64_t y = 1; y < x; y++) {
 			int64_t n = xres - (y * y);
 			int r = n % 60;
 			if ((r == 11 || r == 23 || r == 47 || r == 59) && n <= max) {
@@ -198,7 +200,7 @@ int64_t primeSum(int64_t upperBound) {
 int main(int argc, int* argv[]) {
 	
 	clock_t begin = clock();
-	int index = 1000000;
+	int index = 10000000;
 	
 	int64_t prime = nthPrimeAtkin(index);
 	
