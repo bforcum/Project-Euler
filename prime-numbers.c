@@ -77,48 +77,55 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 		isPrime[5] = (char) 1;
 	}
 
-	for (int64_t x = 1; 4 * x * x < max; x++) {
+	clock_t begin = clock(); 
+	for (int64_t x = 1, xUpper = (int64_t) ceil(sqrt(max / 4)); x < xUpper; x++) {
 		int64_t xres = 4 * x * x;
-		for (int64_t y = 1; y * y < max - xres; y++) {
+		int64_t yUpper = (int64_t) ceil(sqrt(max - xres));
+		for (int64_t y = 1; y < yUpper; y++) {
 			
 			// Condition 1
-			int64_t n = (4 * x * x) + (y * y);
+			int64_t n = xres + (y * y);
 			int64_t r = n % 60;
-			if (n <= max) {
-				// 1, 13, 17, 29, 37, 41, 49, or 53
-				if (r == 1 || r == 13 || r == 17 || r == 29 || r == 37 || r == 41 || r == 49 || r == 53) {
-					isPrime[n] = !isPrime[n];
-				}
+			// 1, 13, 17, 29, 37, 41, 49, or 53
+			// r == 1 || r == 13 || r == 37 || r == 49 ||  r == 17 || r == 29 || r == 41 || r == 53
+
+			if ((r == 1 || r == 13 || r == 37 || r == 49 ||  r == 17 || r == 29 || r == 41 || r == 53) && n <= max) {
+				isPrime[n] = !isPrime[n];
 			}
 		}
 	}
-	for (int64_t x = 1; 3 * x * x < max; x++) {
+	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	begin = clock();
+	for (int64_t x = 1, xUpper = (int64_t) ceil(sqrt(max / 3)); x < xUpper; x++) {
 		int64_t xres = 3 * x * x;
-		for (int64_t y = 1; y * y < max - xres; y++) {
+		int64_t yUpper = (int64_t) ceil(sqrt(max - xres));
+		for (int64_t y = 1; y < yUpper; y++) {
 			// Condition 2
-			int n = (3 * x * x) + (y * y);
-			int r = n % 60;
-			if (n <= max) {
-				// 7, 19, 31, or 43
-				if (r == 7 || r == 19 || r == 31 || r == 43) {
-					isPrime[n] = !isPrime[n];
-				}
+			int64_t n = xres + (y * y);
+			if (n % 12 == 7 && n % 60 <= 43 && n <= max) {
+				isPrime[n] = !isPrime[n];
 			}
 		}
 	}
+	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	begin = clock();
 	for (int64_t x = 1; x * x < max; x++) {
-		for (int64_t y = 1; y * y < max && y < x; y++) {
+		int64_t xres = 3 * x * x;
+		int64_t yUpper = (int64_t) ceil(sqrt(max));
+		for (int64_t y = 1; y < yUpper && y < x; y++) {
 			// Condition 3
-			int n = (3 * x * x) - (y * y);
+			int64_t n = xres - (y * y);
 			int r = n % 60;
-			if (n <= max) {
-				// 11, 23, 47, or 59
-				if (r == 11 || r == 23 || r == 47 || r == 59) {
-					isPrime[n] = !isPrime[n];
-				}
+			if ((r == 11 || r == 23 || r == 47 || r == 59) && n <= max) {
+				isPrime[n] = !isPrime[n];
 			}
 		}
 	}
+	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	begin = clock();
 
 	for (int64_t r = 5; r * r <= max; r++) {
 		if (isPrime[r]) {
@@ -126,6 +133,9 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 				isPrime[i] = (char) 0;
 		}
 	}
+	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	begin = clock();
 
 	int64_t primeCount = 3;
 	for (int64_t i = 7; i < max; i+=2) {		
@@ -143,7 +153,9 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 		}
 	}
 	free(isPrime);
-
+	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	begin = clock();
 	*buf = primes;
 	return primeCount;
 }
@@ -186,21 +198,21 @@ int64_t primeSum(int64_t upperBound) {
 int main(int argc, int* argv[]) {
 	
 	clock_t begin = clock();
-	int index = 10000000;
+	int index = 1000000;
 	
-	int64_t prime = nthPrimeEratosthenes(index);
+	int64_t prime = nthPrimeAtkin(index);
 	
-	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	printf("Prime #%I64d is %I64d\n", index, prime);
-	printf("Time for Eratosthenes: %d sec %d ms\n", ms / 1000, ms % 1000);
+	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	printf("Time for Atkin: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
 	begin = clock();
 	
-	prime = nthPrimeAtkin(index);
+	prime = nthPrimeEratosthenes(index);
 	
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	printf("Prime #%I64d is %I64d\n", index, prime);
-	printf("Time for Atkin: %d sec %d ms\n", ms / 1000, ms % 1000);
+	printf("Time for Eratosthenes: %d sec %d ms\n", ms / 1000, ms % 1000);
 
 	return 0;
 }
