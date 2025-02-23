@@ -35,21 +35,25 @@ int64_t sieveOfEratosthenes(int64_t **buf, int64_t max) {
 		}
 	}
 	
+	clock_t begin = clock();
+
 	int64_t primeCount = 1;
+	int64_t maxPrimeCount = 1 + (int64_t) (1.25 * max / log(max));
+	int64_t* primes = malloc(sizeof(int64_t) * maxPrimeCount);
+	primes[0] = 2;
+	
 	for (int64_t i = 3; i < max; i+=2) {		
 		if (isPrime[i]) {
+			primes[primeCount] = i;
 			++primeCount;
 		}
 	}
 	// Scan for primes in isPrime
-	int64_t* primes = malloc(sizeof(int64_t) * primeCount);
-	primes[0] = 2;
-	for (int64_t i = 3, j = 1; i < max; i+=2) {
-		if (isPrime[i]) {
-			primes[j] = i;
-			++j;
-		}
-	}
+	primes = (int64_t *) realloc(primes, sizeof(int64_t) * maxPrimeCount);
+
+	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	printf("Time of processing 5: %d sec %d ms\n", ms / 1000, ms % 1000);
+
 	free(isPrime);
 
 	*buf = primes;
@@ -57,132 +61,10 @@ int64_t sieveOfEratosthenes(int64_t **buf, int64_t max) {
 
 }
 
-int64_t internetAtkin(int64_t** buf, int64_t max) {
-	char* array = malloc(sizeof(char) * max);
-	for (int64_t i = 0; i < max; ++i) {
-		// Bitwise arithmetic that returns 0 for even and 1 for odd
-		array[i] = (char) 0;
-	}
-	// Find prime
-	int sequence[] = { 2, 4 };
-	int index = 0;
-	int k1 = 0, k = 0;
-
-	// Condition 1
-	double xUpper = sqrt(max / 4) + 1;
-	int x = 1;
-	int y = 0;
-
-	while (x < xUpper) {
-		index = 0;
-		k1 = 4 * x * x;
-		y = 1;
-		if (x % 3 == 0) {
-			while (true) {
-				k = k1 + y * y;
-				if (k >= max) {
-					break;
-				}
-				array[k] = !array[k];
-				y += sequence[(++index & 1)];
-			}
-		} else {
-			while (true) {
-				k = k1 + y * y;
-				if (k >= max) {
-					break;
-				}
-				array[k] = !array[k];
-				y += 2;
-			}
-		}
-		x++;
-	}
-
-	// Condition 2
-	xUpper = sqrt(max / 3) + 1;
-	x = 1;
-	y = 0;
-
-	while (x < xUpper) {
-		index = 1;
-		k1 = 3 * x * x;
-		y = 2;
-		while (true) {
-			k = k1 + y * y;
-			if (k >= max) {
-				break;
-			}
-			array[k] = !array[k];
-			y += sequence[(++index & 1)];
-		}
-		x += 2;
-	}
-
-	// Condition 3
-	xUpper = (int) sqrt(max);
-	x = 1;
-	y = 0;
-
-	while (x < xUpper) {
-		k1 = 3 * x * x;
-		if ((x & 1) == 0) {
-			y = 1;
-			index = 0;
-		} else {
-			y = 2;
-			index = 1;
-		}
-		while (y < x) {
-			k = k1 - y * y;
-			if (k < max) {
-				array[k] = !array[k];
-			}
-			y += sequence[(++index & 1)];
-		}
-		x++;
-	}
-
-	array[2] = true;
-	array[3] = true;
-	for (int n = 5; n <= (int) sqrt(max); n++) {
-		if (array[n]) {
-			int n2 = n * n;
-			for (k = n2; k < max; k += n2) {
-				array[k] = false;
-			}
-		}
-	}
-
-	// Display prime
-	int64_t primeCount = 3;
-	for (int64_t i = 7; i < max; i+=2) {		
-		if (array[i]) {
-			++primeCount;
-		}
-	}
-	// Scan for primes in isPrime
-	int64_t* primes = malloc(sizeof(int64_t) * primeCount);
-	primes[0] = 2;
-	for (int64_t i = 3, j = 1; i < max; i+=2) {
-		if (array[i]) {
-			primes[j] = i;
-			++j;
-		}
-	}
-	free(array);
-	*buf = primes;
-	return primeCount;
-}
-
 int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	
-	char* isPrime = malloc(sizeof(char) * max);
-	
-	for (int64_t i = 0; i < max; ++i) {
-		// Bitwise arithmetic that returns 0 for even and 1 for odd
-		isPrime[i] = (char) 0;
-	}
+	// Initialize array filled with 0
+	char* isPrime = calloc(max, sizeof(char));
 
 	clock_t begin = clock(); 
 	// Condition 1
@@ -193,31 +75,32 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 		int64_t xres = 4 * x * x;
 		int64_t yUpper = sqrt(max - xres) + 1;
 		int64_t index = 0;
+		int64_t y = 1;
+
 		if (x % 3 == 0) {
-			for (int64_t y = 1; y < yUpper; y+=sequence[(++index & 1)]) {
-				
+			while (true) {
 				int64_t n = xres + (y * y);
-				int64_t r = n % 60;
-				// 1, 13, 17, 29, 37, 41, 49, or 53
-				// r == 1 || r == 13 || r == 37 || r == 49 ||  r == 17 || r == 29 || r == 41 || r == 53
-				if (n < max) {
-					isPrime[n] = !isPrime[n];
+				if (n >= max) {
+					break;
 				}
+				isPrime[n] = !isPrime[n];
+
+				y += sequence[(++index & 1)];
 			}
 		} else {
-			for (int64_t y = 1; y < yUpper; y+=2) {
+			while (true) {
 				
 				int64_t n = xres + (y * y);
-				int64_t r = n % 60;
-				if (n < max) {
-					isPrime[n] = !isPrime[n];
+				if (n >= max) {
+					break;
 				}
+				isPrime[n] = !isPrime[n];
+				y += 2;
 			}
 		}
-
 	}
 	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	printf("Time for condition 1: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
 	// Condition 2
 	begin = clock();
@@ -225,24 +108,31 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	for (int64_t x = 1; x < xUpper; x+=2) {
 		int64_t index = 1;
 		int64_t xres = 3 * x * x;
-		int64_t yUpper = (int64_t) sqrt(max - xres) + 1;
-		for (int64_t y = 2; y < yUpper; y+=sequence[++index & 1]) {
+		int64_t y = 2;
+		
+		while (true) {
 			int64_t n = xres + (y * y);
-			if (n < max) {
-				isPrime[n] = !isPrime[n];
+			if (n >= max) {
+				break;
 			}
+			isPrime[n] = !isPrime[n];
+
+			y+=sequence[++index & 1];
 		}
 	}
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	printf("Time for condition 2: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
 	// Condition 3
 	begin = clock();
 	xUpper = (int64_t) sqrt(max) + 1;
 	for (int64_t x = 1; x < xUpper; x++) {
-		int64_t index = (x & 1);
 		int64_t xres = 3 * x * x;
-		// int64_t yUpper = (int64_t) sqrt(max) + 1;
+		
+		// If x is odd, index and y are 2 (after index is incremented)
+		// If x is even, index and y is 1 (after index is incremented)
+		int64_t index = (x & 1);
+
 		for (int64_t y = 1 + (x & 1); y < x; y += sequence[++index & 1]) {
 			int64_t n = xres - (y * y);
 			if (n < max) {
@@ -251,7 +141,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 		}
 	}
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	printf("Time for condition 3: %d sec %d ms\n", ms / 1000, ms % 1000);
 	begin = clock();
 
 	if (max > 2) {
@@ -268,28 +158,28 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 		}
 	}
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);	
+	printf("Time for filtering 4: %d sec %d ms\n", ms / 1000, ms % 1000);	
 	
 	
 	// Process sieve
 	begin = clock();
-	int64_t primeCount = 3;
-	for (int64_t i = 7; i < max; i+=2) {		
+	
+	int64_t primeCount = 1;
+	int64_t maxPrimeCount = 1 + (int64_t) (1.25 * max / log(max));
+	int64_t* primes = malloc(sizeof(int64_t) * maxPrimeCount);
+	primes[0] = 2;
+	
+	for (int64_t i = 3; i < max; i+=2) {		
 		if (isPrime[i]) {
+			primes[primeCount] = i;
 			++primeCount;
 		}
 	}
 	// Scan for primes in isPrime
-	int64_t* primes = malloc(sizeof(int64_t) * primeCount);
-	primes[0] = 2;
-	for (int64_t i = 3, j = 1; i < max; i+=2) {
-		if (isPrime[i]) {
-			primes[j] = i;
-			++j;
-		}
-	}
+	primes = (int64_t *) realloc(primes, sizeof(int64_t) * maxPrimeCount);
+
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition: %d sec %d ms\n", ms / 1000, ms % 1000);
+	printf("Time of processing 5: %d sec %d ms\n", ms / 1000, ms % 1000);
 	begin = clock();
 	
 	free(isPrime);
@@ -335,22 +225,23 @@ int64_t primeSum(int64_t upperBound) {
 
 int main(int argc, int* argv[]) {
 	
+	int index = 10000000;
+	
 	clock_t begin = clock();
-	int index = 100000000;
-	
-	int64_t prime = nthPrimeAtkin(index);
-	
-	printf("Prime #%I64d is %I64d\n", index, prime);
+	int64_t prime = nthPrimeEratosthenes(index);
 	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for Atkin: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
-	begin = clock();
-	
-	prime = nthPrimeEratosthenes(index);
-	
-	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	printf("Prime #%I64d is %I64d\n", index, prime);
 	printf("Time for Eratosthenes: %d sec %d ms\n", ms / 1000, ms % 1000);
+	
+	begin = clock();
+	prime = nthPrimeAtkin(index);
+	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	
+	printf("Prime #%I64d is %I64d\n", index, prime);
+	printf("Time for Atkin: %d sec %d ms\n", ms / 1000, ms % 1000);
+	
+	
 
 	return 0;
 }
