@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <math.h>
-#include <time.h>
-
+#include "config.h"
 /**
  * Incorrect answers:
  * 1179908154
@@ -225,18 +219,18 @@ int64_t primeSum(int64_t upperBound) {
 
 int main(int argc, int* argv[]) {
 	
-	int index = 10000000;
+	int64_t index = 1000000000;
+	
+	// clock_t begin = clock();
+	// int64_t prime = nthPrimeEratosthenes(index);
+	// int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	
+	// printf("Prime #%I64d is %I64d\n", index, prime);
+	// printf("Time for Eratosthenes: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
 	clock_t begin = clock();
-	int64_t prime = nthPrimeEratosthenes(index);
+	int64_t prime = nthPrimeAtkin(index);
 	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	
-	printf("Prime #%I64d is %I64d\n", index, prime);
-	printf("Time for Eratosthenes: %d sec %d ms\n", ms / 1000, ms % 1000);
-	
-	begin = clock();
-	prime = nthPrimeAtkin(index);
-	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
 	
 	printf("Prime #%I64d is %I64d\n", index, prime);
 	printf("Time for Atkin: %d sec %d ms\n", ms / 1000, ms % 1000);

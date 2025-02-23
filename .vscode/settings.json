@@ -2,5 +2,6 @@
 	"files.associations": {
 		"stdio.h": "c",
 		"stdbool.h": "c"
-	}
+	},
+	"cmake.sourceDirectory": "C:/Users/SAAS_User/source/repos/Project-Euler/prime-numbers"
 }
