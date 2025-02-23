@@ -10,4 +10,11 @@ project("prime-numbers")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(${PROJECT_NAME} "config.h" "prime-numbers.c")
+add_executable(${PROJECT_NAME}
+    "config.h"
+    "sieve-atkin.h"
+    "sieve-eratosthenes.h"
+    "prime-numbers.c"
+    "sieve-atkin.c"
+    "sieve-eratosthenes.c"
+)
