@@ -4,5 +4,8 @@
 		"stdbool.h": "c",
 		"bit-manipulation.h": "c"
 	},
-	"cmake.sourceDirectory": "C:/Users/SAAS_User/source/repos/Project-Euler/prime-numbers"
+	"cmake.sourceDirectory": "C:/Users/SAAS_User/source/repos/Project-Euler/prime-numbers",
+	"cmake.debugConfig": {
+        "console": "integratedTerminal",
+    },
 }

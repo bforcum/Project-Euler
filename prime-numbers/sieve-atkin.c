@@ -3,7 +3,7 @@
 int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	
 	// Initialize array filled with 0
-	char* isPrime = calloc(max, sizeof(char));
+	char* isPrime = calloc((max + 7) / 8, sizeof(char));
 
 	clock_t begin = clock(); 
 	// Condition 1
@@ -22,7 +22,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 				if (n >= max) {
 					break;
 				}
-				isPrime[n] = !isPrime[n];
+				toggleNthBit(isPrime, n);
 
 				y += sequence[(++index & 1)];
 			}
@@ -33,7 +33,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 				if (n >= max) {
 					break;
 				}
-				isPrime[n] = !isPrime[n];
+				isPrime[n >> 3] ^= 1 << (n & 7);
 				y += 2;
 			}
 		}
@@ -54,7 +54,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 			if (n >= max) {
 				break;
 			}
-			isPrime[n] = !isPrime[n];
+			isPrime[n >> 3] ^= 1 << (n & 7);
 
 			y+=sequence[++index & 1];
 		}
@@ -75,7 +75,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 		for (int64_t y = 1 + (x & 1); y < x; y += sequence[++index & 1]) {
 			int64_t n = xres - (y * y);
 			if (n < max) {
-				isPrime[n] = !isPrime[n];
+				isPrime[n >> 3] ^= 1 << (n & 7);
 			}
 		}
 	}
@@ -84,16 +84,16 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	begin = clock();
 
 	if (max > 2) {
-		isPrime[2] = (char) 1;
+		setNthBit(isPrime, 2);
 	}
 	if (max > 3) {
-		isPrime[3] = (char) 1;
+		setNthBit(isPrime, 3);
 	}
 
 	for (int64_t r = 5; r < (int64_t) sqrt(max) + 1; r++) {
-		if (isPrime[r]) {
+		if (getNthBit(isPrime, r)) {
 			for (int64_t i = r * r; i <= max; i += r * r)
-				isPrime[i] = (char) 0;
+				resetNthBit(isPrime, i);
 		}
 	}
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
@@ -109,7 +109,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	primes[0] = 2;
 	
 	for (int64_t i = 3; i < max; i+=2) {		
-		if (isPrime[i]) {
+		if (isPrime[i >> 3] & (1 << (i & 7))) {
 			primes[primeCount] = i;
 			++primeCount;
 		}

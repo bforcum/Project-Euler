@@ -40,9 +40,6 @@ int64_t sieveOfEratosthenes(int64_t **buf, int64_t max) {
 	// Scan for primes in isPrime
 	primes = (int64_t *) realloc(primes, sizeof(int64_t) * maxPrimeCount);
 
-	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time of processing 5: %d sec %d ms\n", ms / 1000, ms % 1000);
-
 	free(isPrime);
 
 	*buf = primes;

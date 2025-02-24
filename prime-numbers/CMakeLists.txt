@@ -14,7 +14,9 @@ add_executable(${PROJECT_NAME}
     "config.h"
     "sieve-atkin.h"
     "sieve-eratosthenes.h"
+    "bit-manipulation.h"
     "prime-numbers.c"
     "sieve-atkin.c"
     "sieve-eratosthenes.c"
+    "bit-manipulation.c"
 )

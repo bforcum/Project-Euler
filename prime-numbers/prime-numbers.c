@@ -16,7 +16,7 @@ int64_t primeSum(int64_t upperBound) {
 
 int main(int argc, int* argv[]) {
 	
-	int64_t index = 10000000;
+	int64_t index = 100000000;
 	
 	// clock_t begin = clock();
 	// int64_t prime = nthPrimeEratosthenes(index);
