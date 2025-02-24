@@ -5,7 +5,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	// Initialize array filled with 0
 	int* isPrime = calloc((max + 31) / 32, sizeof(int));
 
-	clock_t begin = clock(); 
+	// clock_t begin = clock(); 
 	// Condition 1
 	int64_t sequence[] = {2,4};
 	int64_t xUpper = (int64_t) ceil(sqrt(max / 4)) + 1;
@@ -38,11 +38,11 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 			}
 		}
 	}
-	int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition 1: %d sec %d ms\n", ms / 1000, ms % 1000);
+	// int ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	// printf("Time for condition 1: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
 	// Condition 2
-	begin = clock();
+	// begin = clock();
 	xUpper = (int64_t) ceil(sqrt(max / 3)) + 1;
 	for (int64_t x = 1; x < xUpper; x+=2) {
 		int64_t index = 1;
@@ -59,11 +59,11 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 			y+=sequence[++index & 1];
 		}
 	}
-	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition 2: %d sec %d ms\n", ms / 1000, ms % 1000);
+	// ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	// printf("Time for condition 2: %d sec %d ms\n", ms / 1000, ms % 1000);
 	
 	// Condition 3
-	begin = clock();
+	// begin = clock();
 	xUpper = (int64_t) sqrt(max) + 1;
 	for (int64_t x = 1; x < xUpper; x++) {
 		int64_t xres = 3 * x * x;
@@ -79,9 +79,9 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 			}
 		}
 	}
-	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for condition 3: %d sec %d ms\n", ms / 1000, ms % 1000);
-	begin = clock();
+	// ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	// printf("Time for condition 3: %d sec %d ms\n", ms / 1000, ms % 1000);
+	// begin = clock();
 
 	if (max > 2) {
 		setBit(isPrime, 2);
@@ -96,12 +96,12 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 				resetBit(isPrime, i);
 		}
 	}
-	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time for filtering 4: %d sec %d ms\n", ms / 1000, ms % 1000);	
+	// ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	// printf("Time for filtering 4: %d sec %d ms\n", ms / 1000, ms % 1000);	
 	
 	
 	// Process sieve
-	begin = clock();
+	// begin = clock();
 	
 	int64_t primeCount = 1;
 	int64_t maxPrimeCount = 1 + (int64_t) (1.25 * max / log(max));
@@ -115,11 +115,11 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 			++primeCount;
 		}
 	}
-	primes = (int64_t *) realloc(primes, sizeof(int64_t) * maxPrimeCount);
+	// primes = (int64_t *) realloc(primes, sizeof(int64_t) * maxPrimeCount);
 
-	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
-	printf("Time of processing 5: %d sec %d ms\n", ms / 1000, ms % 1000);
-	begin = clock();
+	// ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
+	// printf("Time of processing 5: %d sec %d ms\n", ms / 1000, ms % 1000);
+	// begin = clock();
 	
 	free(isPrime);
 	*buf = primes;
