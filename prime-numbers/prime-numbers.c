@@ -16,7 +16,7 @@ int64_t primeSum(int64_t upperBound) {
 
 int main(int argc, int* argv[]) {
 	
-	int64_t index = 1000000;
+	int64_t index = 100000000;
 
 	// Prime number 1,000,000,000 is 22801763513
 	

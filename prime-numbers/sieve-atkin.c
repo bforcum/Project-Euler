@@ -3,7 +3,7 @@
 int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	
 	// Initialize array filled with 0
-	char* isPrime = calloc((max + 7) / 8, sizeof(char));
+	int* isPrime = calloc((max + 31) / 32, sizeof(int));
 
 	clock_t begin = clock(); 
 	// Condition 1

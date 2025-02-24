@@ -4,7 +4,7 @@ int64_t sieveOfEratosthenes(int64_t **buf, int64_t max) {
 	
 	// sqrt(max) is the maximum factor that could prove numbers in range composite
 	int64_t maxFactor = (int64_t) sqrt(max);
-	char* isPrime = malloc(sizeof(char) * max);
+	char* isPrime = malloc(sizeof(char) * (max + 7) / 8);
 	
 	// Initialize 2 and all odd numbers as primes
 	isPrime[2] = (char) 1;

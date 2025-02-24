@@ -2,7 +2,8 @@
 	"files.associations": {
 		"stdio.h": "c",
 		"stdbool.h": "c",
-		"bit-manipulation.h": "c"
+		"bit-manipulation.h": "c",
+		"cstddef": "c"
 	},
 	"cmake.sourceDirectory": "C:/Users/SAAS_User/source/repos/Project-Euler/prime-numbers",
 	"cmake.debugConfig": {

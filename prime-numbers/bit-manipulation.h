@@ -12,10 +12,10 @@
 	((byte) & 0x01 ? '1' : '0')
 
 #define getBit(buf, n) \
-	(0 != (buf[n >> 3] & (1 << (n & 7))))
+	(0 != (buf[n >> 5] & (1 << (n & 31))))
 #define setBit(buf, n) \
-buf[n >> 3] |= (1 << (n & 7))
+	buf[n >> 5] |= (1 << (n & 31))
 #define resetBit(buf, n) \
-	buf[n >> 3] &= 255 ^ (1 << (n & 7))
+	buf[n >> 5] &= ~(1 << (n & 31))
 #define toggleBit(buf, n) \
-	buf[n >> 3] ^= (1 << (n & 7))
+	buf[n >> 5] ^= (1 << (n & 31))
