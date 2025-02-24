@@ -22,7 +22,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 				if (n >= max) {
 					break;
 				}
-				toggleNthBit(isPrime, n);
+				toggleBit(isPrime, n);
 
 				y += sequence[(++index & 1)];
 			}
@@ -33,7 +33,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 				if (n >= max) {
 					break;
 				}
-				isPrime[n >> 3] ^= 1 << (n & 7);
+				toggleBit(isPrime, n);
 				y += 2;
 			}
 		}
@@ -54,7 +54,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 			if (n >= max) {
 				break;
 			}
-			isPrime[n >> 3] ^= 1 << (n & 7);
+			toggleBit(isPrime, n);
 
 			y+=sequence[++index & 1];
 		}
@@ -75,7 +75,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 		for (int64_t y = 1 + (x & 1); y < x; y += sequence[++index & 1]) {
 			int64_t n = xres - (y * y);
 			if (n < max) {
-				isPrime[n >> 3] ^= 1 << (n & 7);
+				toggleBit(isPrime, n);
 			}
 		}
 	}
@@ -84,16 +84,16 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	begin = clock();
 
 	if (max > 2) {
-		setNthBit(isPrime, 2);
+		setBit(isPrime, 2);
 	}
 	if (max > 3) {
-		setNthBit(isPrime, 3);
+		setBit(isPrime, 3);
 	}
 
 	for (int64_t r = 5; r < (int64_t) sqrt(max) + 1; r++) {
-		if (getNthBit(isPrime, r)) {
+		if (getBit(isPrime, r)) {
 			for (int64_t i = r * r; i <= max; i += r * r)
-				resetNthBit(isPrime, i);
+				resetBit(isPrime, i);
 		}
 	}
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
@@ -107,14 +107,14 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 	int64_t maxPrimeCount = 1 + (int64_t) (1.25 * max / log(max));
 	int64_t* primes = malloc(sizeof(int64_t) * maxPrimeCount);
 	primes[0] = 2;
+	primes[1] = 3;
 	
-	for (int64_t i = 3; i < max; i+=2) {		
-		if (isPrime[i >> 3] & (1 << (i & 7))) {
+	for (int64_t i = 5, j = 1; i < max; i+= ((++j & 1) + 1) << 1) {		
+		if (getBit(isPrime, i)) {
 			primes[primeCount] = i;
 			++primeCount;
 		}
 	}
-	// Scan for primes in isPrime
 	primes = (int64_t *) realloc(primes, sizeof(int64_t) * maxPrimeCount);
 
 	ms = ((clock() - begin) * 1000 / CLOCKS_PER_SEC);
@@ -128,7 +128,7 @@ int64_t sieveOfAtkin(int64_t** buf, int64_t max) {
 
 int64_t nthPrimeAtkin(int64_t n) {
 	int64_t upperBound = (int64_t) (3 + (n - 1) * (log(n) + log(1 + log(n))));
-	int64_t* primes = malloc(1);
+	int64_t* primes;
 	int64_t count = sieveOfAtkin(&primes, upperBound);
 	if (count < n) {
 		printf("Error - not enough primes found");

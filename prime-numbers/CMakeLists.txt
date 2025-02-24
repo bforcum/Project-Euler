@@ -18,5 +18,4 @@ add_executable(${PROJECT_NAME}
     "prime-numbers.c"
     "sieve-atkin.c"
     "sieve-eratosthenes.c"
-    "bit-manipulation.c"
 )

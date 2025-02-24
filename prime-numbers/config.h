@@ -4,3 +4,5 @@
 #include <stdint.h>
 #include <math.h>
 #include <time.h>
+
+#pragma warning(suppress: 4244)
