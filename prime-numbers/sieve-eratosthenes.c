@@ -5,12 +5,12 @@ int64_t sieveOfEratosthenes(int64_t **buf, int64_t max) {
 	// sqrt(max) is the maximum factor that could prove numbers in range composite
 	int64_t maxFactor = (int64_t) sqrt(max);
 
-	int64_t array_size = (max + 31) / 32;
-	int* isPrime = malloc(sizeof(int) * (max + 31) / 32);
+	int64_t array_size = (max + 31) >> 5;
+	int* isPrime = malloc(sizeof(int) * (max + 31) >> 5);
 	
 	// Initialize prime numbers under 32
 	isPrime[0] = 0b10100000100010100010100010101100;
-	for (int64_t i = 1; i < (max + 31) / 32; ++i) {
+	for (int64_t i = 1; i < (max - 1) >> 5; ++i) {
 		// even numbers start at 0 and odds at 1
 		isPrime[i] = 0b10101010101010101010101010101010;
 	}
